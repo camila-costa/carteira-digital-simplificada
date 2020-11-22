@@ -16,7 +16,7 @@ class CreateWalletsTable extends Migration
         Schema::create('wallets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->unique();
-            $table->double('value', 4, 2);
+            $table->float('value', 4, 2);
             $table->boolean('is_active')->default(true);
             $table->softDeletes();
             $table->timestamps();

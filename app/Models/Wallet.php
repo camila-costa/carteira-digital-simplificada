@@ -13,4 +13,9 @@ class Wallet extends Model
 
     protected $fillable = ['user_id', 'value'];
     protected $dates = ['deleted_at'];
+
+    public static function doOperation(float $currentValue, float $value)
+    {
+        return $currentValue + $value;
+    }
 }

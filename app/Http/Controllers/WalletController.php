@@ -48,17 +48,27 @@ class WalletController extends Controller
      */
     public function update(Request $request, Wallet $wallet)
     {
-        $this->validate($request, [
-            'value' => 'required|numeric',
-        ]);
+        if ($request->method() == 'PATCH') {
+            $this->validate($request, [
+                'value' => 'required|numeric',
+            ]);
 
-        $params = $request->all();
+            $params = $request->all();
 
-        // Keep the origin user_id
-        $params['user_id'] = $wallet['user_id'];
+            // Keep the origin user_id
+            $params['user_id'] = $wallet['user_id'];
 
-        $wallet->update($params);
-        return $wallet;
+            // Do an operation with the current and the new value
+            $params['value'] = Wallet::doOperation($wallet['value'], $params['value']);
+
+            $wallet->update($params);
+            return $wallet;
+        }
+
+        // If is PUT, sends 405
+        return response()->json([
+            'message' => 'Method Not Allowed',
+        ], 405);
     }
 
     /**
