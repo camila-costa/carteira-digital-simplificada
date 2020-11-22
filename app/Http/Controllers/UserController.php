@@ -32,7 +32,7 @@ class UserController extends Controller
         $params = $request->all();
 
         // Define user as UserType::ShopKeeper or UserType::Commom
-        $params['user_type'] = User::documentToTypeUser($params['document']);
+        $params['user_type'] = User::documentToUserType($params['document']);
 
         DB::beginTransaction();
         try {
@@ -85,7 +85,7 @@ class UserController extends Controller
 
         $params = $request->all();
         // Define user as UserType::ShopKeeper or UserType::Commom
-        $params['user_type'] = User::documentToTypeUser($params['document']);
+        $params['user_type'] = User::documentToUserType($params['document']);
 
         $user->update($params);
         return $user;

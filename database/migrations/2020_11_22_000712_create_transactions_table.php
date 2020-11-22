@@ -15,6 +15,9 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('payer')->constrained('users');
+            $table->foreignId('payee')->constrained('users');
+            $table->float('value', 4, 2);
             $table->timestamps();
         });
     }

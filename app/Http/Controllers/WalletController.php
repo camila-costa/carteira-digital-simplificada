@@ -70,15 +70,4 @@ class WalletController extends Controller
             'message' => 'Method Not Allowed',
         ], 405);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Wallet  $wallet
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Wallet $wallet)
-    {
-        //
-    }
 }

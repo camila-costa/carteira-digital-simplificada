@@ -17,7 +17,7 @@ class User extends Model
     protected $fillable = ['name', 'user_type', 'document', 'email', 'password'];
     protected $dates = ['deleted_at'];
 
-    public static function documentToTypeUser(string $document)
+    public static function documentToUserType(string $document)
     {
         return (strlen($document) > User::MAX_CPF) ? UserType::ShopKeeper : UserType::Commom;
     }

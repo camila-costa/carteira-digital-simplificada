@@ -20,7 +20,6 @@ class CreateUsersTable extends Migration
             $table->string('document')->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->boolean('is_active')->default(true);
             $table->softDeletes();
             $table->timestamps();
         });
