@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WalletController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +21,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 // Public API
-Route::group(['namespace' => 'App\Http\Controllers'], function () {
-    Route::resource('users', 'UserController', ['except' => ['create', 'edit']]);
-});
+
+// Users
+Route::resource('users', UserController::class, ['except' => ['create', 'edit']]);
+Route::get('users/{id}/wallets', [WalletController::class, 'indexFromUser']);
+
+// Wallets
+Route::resource('wallets', WalletController::class, ['except' => ['create', 'edit', 'store', 'destroy']]);

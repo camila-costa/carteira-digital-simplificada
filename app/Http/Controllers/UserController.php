@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\DB;
@@ -36,6 +37,15 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
             $newUser = User::create($params);
+
+            // Create the user wallet
+            Wallet::create(
+                [
+                    'user_id' => $newUser['id'],
+                    'value' => 0.00
+                ]
+            );
+
             DB::commit();
         } catch (Exception $ex) {
             Log::info($ex->getMessage());
@@ -89,7 +99,21 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->delete();
+        DB::beginTransaction();
+        try {
+            $user->delete();
+
+            // Delete the user wallet
+            $wallet = Wallet::where('user_id', $user['id'])->first();
+            $wallet->delete();
+
+            DB::commit();
+        } catch (Exception $ex) {
+            Log::info($ex->getMessage());
+            DB::rollBack();
+            return response()->json($ex->getMessage(), 409);
+        }
+
         return response()->noContent();
     }
 }
