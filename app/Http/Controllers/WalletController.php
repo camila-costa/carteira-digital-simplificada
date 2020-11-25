@@ -4,9 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\Wallet;
 use Illuminate\Http\Request;
+use App\Services\WalletService;
+use App\Enums\WalletOperation;
 
 class WalletController extends Controller
 {
+    /**
+     * The transaction service implementation.
+     *
+     * @var WalletService
+     */
+    protected $walletService;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @param  WalletService  $walletService
+     * @return void
+     */
+    public function __construct(WalletService $walletService)
+    {
+        $this->walletService = $walletService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -54,15 +74,12 @@ class WalletController extends Controller
             ]);
 
             $params = $request->all();
+            $value = $params['value'];
 
             // Keep the origin user_id
-            $params['user_id'] = $wallet['user_id'];
+            $userId = $wallet['user_id'];
 
-            // Do an operation with the current and the new value
-            $params['value'] = Wallet::doOperation($wallet['value'], $params['value']);
-
-            $wallet->update($params);
-            return $wallet;
+            return $this->walletService->update($userId, $value, WalletOperation::Addition);
         }
 
         // If is PUT, sends 405

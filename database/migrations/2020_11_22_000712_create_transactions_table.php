@@ -17,7 +17,7 @@ class CreateTransactionsTable extends Migration
             $table->id();
             $table->foreignId('payer')->constrained('users');
             $table->foreignId('payee')->constrained('users');
-            $table->float('value', 4, 2);
+            $table->float('value', 8, 2);
             $table->timestamps();
         });
     }
