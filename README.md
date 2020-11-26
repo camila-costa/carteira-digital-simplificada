@@ -18,10 +18,10 @@ $ cd carteira-digital-simplificada
 $ composer install
 
 # Rode as migrações do banco
-$ php artisan migrate:fresh --seed
+$ php artisan migrate --seed
 
 # Execute a aplicação no local
-$ composer install
+$ php artisan serve
 
 # O servidor inciará na porta:8000 - acesse <localhost:8000/api>
 ```
