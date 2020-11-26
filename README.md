@@ -17,6 +17,7 @@ $ cd carteira-digital-simplificada
 # Instale as dependências
 $ composer install
 
+# Crie uma tabela chamada simplified_wallet
 # Rode as migrações do banco
 $ php artisan migrate:fresh --seed
 
