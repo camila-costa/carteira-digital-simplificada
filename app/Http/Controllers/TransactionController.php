@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\Services\TransactionService;
-use Illuminate\Http\Request;
+use App\Enums\TransactionStatus;
 use App\Http\Requests\TransactionRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\WalletController;
 use App\Enums\WalletOperation;
 
 class TransactionController extends Controller
@@ -53,11 +53,22 @@ class TransactionController extends Controller
 
         DB::beginTransaction();
         try {
-            // Update the user wallet
-            $this->transactionService->updateUserWallet($params['payer'], $params['value'], WalletOperation::Subtraction);
-            $this->transactionService->updateUserWallet($params['payee'], $params['value'], WalletOperation::Addition);
+            $statusTransaction = $this->transactionService->authorizeTransaction();
 
+            // If the transaction is authorized, update the user wallet
+            if($statusTransaction == TransactionStatus::Authorized) {
+                $this->transactionService->updateUserWallet($params['payer'], $params['value'], WalletOperation::Subtraction);
+                $this->transactionService->updateUserWallet($params['payee'], $params['value'], WalletOperation::Addition);
+            }
+
+            $params['status'] = $statusTransaction;
             $newTransaction = Transaction::create($params);
+
+            // Notify the payee about the transaction
+            if($statusTransaction == TransactionStatus::Authorized) {
+                $this->transactionService->notifyPayee($params['payee'], $newTransaction->id);
+            }
+
             DB::commit();
         } catch (Exception $ex) {
             Log::info($ex->getMessage());

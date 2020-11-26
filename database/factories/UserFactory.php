@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Enums\UserType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class UserFactory extends Factory
@@ -21,13 +22,13 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        // Set user as commom (1) or shopKeeper (2)
+        // Set user as UserType::Commom or UserType::ShopKeeper
         $userType = null;
 
         return [
             'name' => $this->faker->name,
-            'user_type' => ($userType ?: $userType = rand(1, 2)) ?: $userType,
-            'document' => ($userType == 1) ? $this->faker->unique()->cpf : $this->faker->unique()->cnpj,
+            'user_type' => ($userType ?: $userType = rand(UserType::Commom, UserType::ShopKeeper)) ?: $userType,
+            'document' => ($userType == UserType::Commom) ? $this->faker->unique()->cpf : $this->faker->unique()->cnpj,
             'email' => $this->faker->unique()->safeEmail,
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
         ];

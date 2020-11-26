@@ -3,13 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Wallet;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
+    /**
+     * The transaction service implementation.
+     *
+     * @var UserService
+     */
+    protected $userService;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @param  UserService  $userService
+     * @return void
+     */
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -39,12 +57,7 @@ class UserController extends Controller
             $newUser = User::create($params);
 
             // Create the user wallet
-            Wallet::create(
-                [
-                    'user_id' => $newUser['id'],
-                    'value' => 0.00
-                ]
-            );
+            $this->userService->createUserWallet($newUser['id']);
 
             DB::commit();
         } catch (Exception $ex) {
@@ -104,8 +117,7 @@ class UserController extends Controller
             $user->delete();
 
             // Delete the user wallet
-            $wallet = Wallet::where('user_id', $user['id'])->first();
-            $wallet->delete();
+            $this->userService->deleteUserWallet($user['id']);
 
             DB::commit();
         } catch (Exception $ex) {

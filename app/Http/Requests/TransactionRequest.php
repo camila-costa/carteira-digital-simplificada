@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Enums\UserType;
 use App\Models\User;
+use App\Models\Wallet;
 
 class TransactionRequest extends FormRequest
 {
@@ -27,7 +28,7 @@ class TransactionRequest extends FormRequest
     public function rules()
     {
         return [
-            'value' => 'required|numeric',
+            'value' => 'required|numeric|gt:0',
             'payer' => 'required|integer',
             'payee' => 'required|integer',
         ];
@@ -43,10 +44,13 @@ class TransactionRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $payer = User::findOrFail($this->payer);
-            $payee = User::findOrFail($this->payee);
+            $walletPayer = Wallet::where('user_id', '=', $this->payer)->firstOrFail();
 
             if (!$this->payerIsValid($payer)) {
                 $validator->errors()->add('payer', 'The payer must not be a shopkeeper!');
+            }
+            if ($walletPayer->value < $this->value) {
+                $validator->errors()->add('payer', 'The payer must have the value in the wallet!');
             }
         });
     }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTransactionsTable extends Migration
+class CreateWalletLogsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateTransactionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('wallet_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('payer')->constrained('users');
-            $table->foreignId('payee')->constrained('users');
+            $table->foreignId('wallet_id')->constrained('wallets');
             $table->float('value', 8, 2);
-            $table->tinyInteger('status');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ class CreateTransactionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('wallet_logs');
     }
 }

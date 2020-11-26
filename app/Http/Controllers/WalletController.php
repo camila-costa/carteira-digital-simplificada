@@ -6,6 +6,7 @@ use App\Models\Wallet;
 use Illuminate\Http\Request;
 use App\Services\WalletService;
 use App\Enums\WalletOperation;
+use Illuminate\Support\Facades\DB;
 
 class WalletController extends Controller
 {
@@ -69,17 +70,24 @@ class WalletController extends Controller
     public function update(Request $request, Wallet $wallet)
     {
         if ($request->method() == 'PATCH') {
-            $this->validate($request, [
-                'value' => 'required|numeric',
-            ]);
+            try {
+                $this->validate($request, [
+                    'value' => 'required|numeric',
+                ]);
 
-            $params = $request->all();
-            $value = $params['value'];
+                $params = $request->all();
+                $value = $params['value'];
+                // Keep the origin user_id
+                $userId = $wallet['user_id'];
 
-            // Keep the origin user_id
-            $userId = $wallet['user_id'];
-
-            return $this->walletService->update($userId, $value, WalletOperation::Addition);
+                $wallet = $this->walletService->update($userId, $value, WalletOperation::Addition);
+                DB::commit();
+                return $wallet;
+            } catch (Exception $ex) {
+                Log::info($ex->getMessage());
+                DB::rollBack();
+                return response()->json($ex->getMessage(), 409);
+            }
         }
 
         // If is PUT, sends 405
