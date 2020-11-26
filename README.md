@@ -18,7 +18,7 @@ $ cd carteira-digital-simplificada
 $ composer install
 
 # Rode as migrações do banco
-$ php artisan migrate --seed
+$ php artisan migrate:fresh --seed
 
 # Execute a aplicação no local
 $ php artisan serve
