@@ -26,7 +26,7 @@ $ composer install
 # O servidor inciará na porta:8000 - acesse <localhost:8000/api>
 ```
 
-## API RESTFul documentada em: [Carteira Digitak Simplificada](https://documenter.getpostman.com/view/12417512/TVmHCyr4#intro)
+## API RESTFul documentada em: [Carteira Digital Simplificada](https://documenter.getpostman.com/view/12417512/TVmHCyr4#intro)
 
 ## Requisitos mínimos:
 
