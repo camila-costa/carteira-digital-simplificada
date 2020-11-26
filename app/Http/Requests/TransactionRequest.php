@@ -52,6 +52,9 @@ class TransactionRequest extends FormRequest
             if ($walletPayer->value < $this->value) {
                 $validator->errors()->add('payer', 'The payer must have the value in the wallet!');
             }
+            if ($this->payer == $this->payee) {
+                $validator->errors()->add('payer', 'The payer must be different from the payee!');
+            }
         });
     }
 
